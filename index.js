@@ -2,10 +2,9 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const LOG_DIR = path.join(__dirname, 'logs');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
-const logFile = fs.openSync(path.join(LOG_DIR, `log.json`), 'a');
+const logFile = fs.openSync(path.join(PUBLIC_DIR, `log.json`), 'a');
 
 const app = express();
 

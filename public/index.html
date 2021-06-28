@@ -14,28 +14,61 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>ZETIN COVID-19 Check</title>
+    <title>ZETIN 출입기록관리서비스</title>
+    <style>
+        .frame {
+            padding: 2rem;
+            margin: auto;
+            max-width: 400px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>
-        ZETIN Covid-19 Check
-    </h1>
-    <form onsubmit="submitLog(event)">
-        <div class="row">
-            <span>학번</span> <input type="number" autocomplete="student-number" id="studentNumber">
+    <div class="frame">
+        <h1>
+            ZETIN 출입기록관리서비스
+        </h1>
+        <form onsubmit="submitLog(event)">
+            <div class="row mt-1">
+                <label class="form-label">학번</label>
+                <input class="form-control" type="number" autocomplete="student-number" id="studentNumber">
+            </div>
+            <div class="row mt-1">
+                <label class="form-label">체온</label>
+                <input class="form-control" type="number" step="0.1" id="temp">
+            </div>
+            <div class="row mt-4">
+                <input class="btn btn-primary" type="submit" value="제출하기">
+            </div>
+        </form>
+        <div class="mt-4">
+            <p>
+                본 서비스를 사용하여 출입기록관리를 하는 것은 방역을 위한 개인정보제공에 동의하는 것으로 간주됩니다.
+            </p>
+            <p>
+                또한 본 서비스를 사용하는 장소에 방문할 때에는 <strong>반드시 마스크를 착용하고 손소독을 수행하여야 합니다.</strong>
+            </p>
+            <p>
+                이 서비스는 서울시립대학교 중앙동아리 ZETIN을 위해 만들어진 서비스입니다.
+            </p>
         </div>
-        <div class="row">
-            <span>체온</span> <input type="number" id="temp">
-        </div>
+        <hr>
         <div>
-            <input type="submit" value="제출하기">
+            Contact : 서울시립대학교 중앙동아리 ZETIN 2021년 회장 권준호 / <a href="unknownpgr@gmail.com">unknownpgr@gmail.com</a>
         </div>
-    </form>
+    </div>
 
     <script>
+        const sn = localStorage.getItem("sn");
+        if (sn) {
+            studentNumber.value = sn;
+        }
+
         function submitLog(event) {
             event.preventDefault()
+            localStorage.setItem("sn", studentNumber.value);
+
             fetch('/log', {
                 method: 'POST',
                 headers: {
@@ -49,7 +82,11 @@
             })
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res)
+                    if (res.status == 'ok') {
+                        alert('정상적으로 기록되었습니다.')
+                    } else {
+                        alert('서버 오류로 기록되지 못했습니다. 수기로 작성해주세요.')
+                    }
                 })
             return false;
         }
